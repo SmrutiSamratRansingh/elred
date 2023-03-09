@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>757871850295-epj1bil66i1lmgfbg8g04kiq2tr53ek7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.757871850295-epj1bil66i1lmgfbg8g04kiq2tr53ek7</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAZlJtg47CJ1N5qGUOkhjohtzY6mkgH3Xg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>757871850295</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.eired.eired</string>
+	<key>PROJECT_ID</key>
+	<string>interview-1bfb6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>interview-1bfb6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:757871850295:ios:efb2868f384a6ab23d20b2</string>
+</dict>
+</plist>

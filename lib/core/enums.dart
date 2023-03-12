@@ -1,1 +1,1 @@
-enum TodoType { music, business, office, sports, shopping, home }
+enum TodoInfo { music, business, office, sports, shopping, home }

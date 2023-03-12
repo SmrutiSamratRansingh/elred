@@ -1,3 +1,4 @@
+import 'package:eired/core/print_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:developer' as devtools show log;
@@ -34,6 +35,10 @@ class AuthRepository {
 
       // Once signed in, return the UserCredential
       return await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      printDebug('Failed with error code: ${e.code}');
+      printDebug(e.message);
+      rethrow;
     } catch (e) {
       devtools.log(e.toString());
       rethrow;

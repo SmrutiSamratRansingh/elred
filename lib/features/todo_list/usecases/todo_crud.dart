@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eired/core/eired_exception.dart';
 import 'package:eired/features/todo_list/models/todo_model.dart';
 import 'package:eired/features/todo_list/repository/todo_repository.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,7 @@ class TodoCrudUsecase {
 
   TodoCrudUsecase({required this.todoRepository});
 
-  addTodo(
+  Future<void> addTodo(
       {required TodoModel todoModel, required CollectionReference ref}) async {
     try {
       await todoRepository.addTodo(todoModel, ref);
@@ -18,7 +17,7 @@ class TodoCrudUsecase {
     }
   }
 
-  editTodo(
+  Future<void> editTodo(
       {required TodoModel todoModel,
       required CollectionReference ref,
       required String docId}) async {
@@ -29,7 +28,7 @@ class TodoCrudUsecase {
     }
   }
 
-  deleteTodo(
+  Future<void> deleteTodo(
       {required TodoModel todoModel,
       required CollectionReference ref,
       required String docId}) async {

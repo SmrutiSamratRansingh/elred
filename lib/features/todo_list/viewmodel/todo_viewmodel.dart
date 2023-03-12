@@ -3,7 +3,9 @@ import 'package:eired/core/eired_exception.dart';
 import 'package:eired/core/enums.dart';
 import 'package:eired/features/todo_list/models/todo_model.dart';
 import 'package:eired/features/todo_list/usecases/todo_crud.dart';
+import 'package:eired/features/todo_list/views/todo_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../core/snackbar_helper.dart';
 
 class TodoViewModel extends ChangeNotifier {
@@ -23,6 +25,8 @@ class TodoViewModel extends ChangeNotifier {
   ];
   String selectedType = "";
   IconData icon = Icons.face;
+
+  bool isLoading = false;
 
   TodoViewModel({required this.todoCrudUsecase});
 
@@ -54,12 +58,15 @@ class TodoViewModel extends ChangeNotifier {
 
   void addTodo() {
     try {
+      isLoading = true;
+      notifyListeners();
       final todo = TodoModel(
           type: selectedType,
           heading: titleController.text,
           place: placeController.text,
           time: timeController.text);
       todoCrudUsecase.addTodo(todoModel: todo, ref: todoCollection);
+      Get.offAll(const Todo());
     } on EiredException catch (e) {
       ShowSnackbar.showErrorSnackbar(e.message);
     } catch (e) {

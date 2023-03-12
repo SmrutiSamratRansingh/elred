@@ -4,9 +4,9 @@ import 'package:eired/core/print_helper.dart';
 import 'package:eired/features/todo_list/models/todo_model.dart';
 
 class TodoRepository {
-  addTodo(TodoModel todoModel, CollectionReference todoCollection) {
+  addTodo(TodoModel todoModel, CollectionReference todoCollection) async {
     try {
-      todoCollection
+      await todoCollection
           .add({
             'type': todoModel.type,
             'heading': todoModel.heading,

@@ -162,7 +162,6 @@ class EnterDataScreen extends StatelessWidget {
 
   void addTodo(BuildContext context) {
     final todoVmRead = context.read<TodoViewModel>();
-
     todoVmRead.addTodo();
   }
 }

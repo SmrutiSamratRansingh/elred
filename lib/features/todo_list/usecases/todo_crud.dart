@@ -29,11 +29,9 @@ class TodoCrudUsecase {
   }
 
   Future<void> deleteTodo(
-      {required TodoModel todoModel,
-      required CollectionReference ref,
-      required String docId}) async {
+      {required CollectionReference ref, required String docId}) async {
     try {
-      await todoRepository.deleteTodo(todoModel, ref, docId);
+      await todoRepository.deleteTodo(ref, docId);
     } catch (e) {
       rethrow;
     }

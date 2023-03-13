@@ -1,25 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eired/core/print_helper.dart';
+import 'package:eired/features/todo_list/models/todo_model.dart';
 import 'package:eired/features/todo_list/views/enter_data_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../repository/todo_repository.dart';
-import '../usecases/todo_crud.dart';
 import '../viewmodel/todo_viewmodel.dart';
-
-class Todo extends StatelessWidget {
-  const Todo({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: ((context) => TodoViewModel(
-          todoCrudUsecase: TodoCrudUsecase(todoRepository: TodoRepository()))),
-      child: const TodoScreen(),
-    );
-  }
-}
 
 class TodoScreen extends StatelessWidget {
   const TodoScreen({Key? key}) : super(key: key);
@@ -30,8 +16,10 @@ class TodoScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: ((context) => const EnterData())));
+          final todoVmRead = context.read<TodoViewModel>();
+          todoVmRead.clearControllers();
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: ((context) => const EnterDataScreen())));
         },
       ),
       body: Column(
@@ -42,6 +30,7 @@ class TodoScreen extends StatelessWidget {
 
   todoList(BuildContext context) {
     final todoVmRead = context.read<TodoViewModel>();
+
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: todoVmRead.todoCollection
             .orderBy('date', descending: true)
@@ -70,6 +59,17 @@ class TodoScreen extends StatelessWidget {
                   return Column(
                     children: [
                       ListTile(
+                        onTap: () {
+                          String docId = snapshot.data!.docs[index].id;
+                          TodoModel todoModel = TodoModel(
+                              type: data["type"],
+                              heading: data["heading"],
+                              place: data["place"],
+                              time: data["time"]);
+
+                          showEditDeleteDialog(
+                              context, docId, todoModel, todoVmRead);
+                        },
                         leading: Container(
                           height: 40,
                           width: 40,
@@ -127,6 +127,36 @@ class TodoScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void showEditDeleteDialog(
+      context, String docId, TodoModel todoModel, TodoViewModel todoVmRead) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Edit Todos"),
+          content: const Text("Click to update or delete todo."),
+          actions: [
+            TextButton.icon(
+              label: const Text("Edit"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                todoVmRead.setDataForEdit(todoModel, docId);
+              },
+              icon: const Icon(Icons.edit),
+            ),
+            TextButton.icon(
+              label: const Text("Delete"),
+              onPressed: () {
+                todoVmRead.deleteDoc(docId);
+              },
+              icon: const Icon(Icons.delete),
+            ),
+          ],
+        );
+      },
     );
   }
 }

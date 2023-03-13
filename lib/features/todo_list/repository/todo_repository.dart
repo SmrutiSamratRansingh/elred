@@ -29,7 +29,12 @@ class TodoRepository {
     try {
       todoCollection
           .doc(docId)
-          .update({'company': 'Stokes and Sons'})
+          .update({
+            'type': todoModel.type,
+            'heading': todoModel.heading,
+            'place': todoModel.place,
+            'time': todoModel.time,
+          })
           .then((value) => printDebug("User Updated"))
           .catchError((error) {
             printDebug("Failed to update user: $error");
@@ -40,8 +45,7 @@ class TodoRepository {
     }
   }
 
-  deleteTodo(
-      TodoModel todoModel, CollectionReference todoCollection, String docId) {
+  deleteTodo(CollectionReference todoCollection, String docId) {
     try {
       todoCollection
           .doc(docId)

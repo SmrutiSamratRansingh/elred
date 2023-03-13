@@ -1,22 +1,6 @@
-import 'package:eired/features/todo_list/models/todo_model.dart';
-import 'package:eired/features/todo_list/repository/todo_repository.dart';
-import 'package:eired/features/todo_list/usecases/todo_crud.dart';
 import 'package:eired/features/todo_list/viewmodel/todo_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-class EnterData extends StatelessWidget {
-  const EnterData({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: ((context) => TodoViewModel(
-          todoCrudUsecase: TodoCrudUsecase(todoRepository: TodoRepository()))),
-      child: const EnterDataScreen(),
-    );
-  }
-}
 
 class EnterDataScreen extends StatelessWidget {
   const EnterDataScreen({Key? key}) : super(key: key);
@@ -55,23 +39,24 @@ class EnterDataScreen extends StatelessWidget {
                     height: 10,
                   ),
                   createTextField(
-                    hint: "Title",
-                    controller: todoVmRead.titleController,
-                    isReadOnly: false,
-                  ),
+                      hint: "Title",
+                      controller: todoVmRead.titleController,
+                      isReadOnly: false,
+                      context: context),
                   const SizedBox(
                     height: 20,
                   ),
                   createTextField(
-                    hint: "Place",
-                    controller: todoVmRead.placeController,
-                    isReadOnly: false,
-                  ),
+                      hint: "Place",
+                      controller: todoVmRead.placeController,
+                      isReadOnly: false,
+                      context: context),
                   const SizedBox(
                     height: 20,
                   ),
                   createTextField(
                     hint: "Time",
+                    context: context,
                     controller: todoVmRead.timeController,
                     isReadOnly: true,
                     callback: () async {
@@ -88,9 +73,15 @@ class EnterDataScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                           onPressed: () {
-                            addTodo(context);
+                            if (!todoVmRead.isEdit) {
+                              addTodo(context);
+                            } else {
+                              updateTodo(context);
+                            }
                           },
-                          child: const Text("ADD YOUR THING")))
+                          child: Text(!todoVmRead.isEdit
+                              ? "ADD YOUR THING"
+                              : "UPDATE YOUR THING")))
                 ],
               ),
             )));
@@ -139,7 +130,10 @@ class EnterDataScreen extends StatelessWidget {
       {required String hint,
       required TextEditingController controller,
       required bool isReadOnly,
-      Function()? callback}) {
+      Function()? callback,
+      required BuildContext context}) {
+    final todoVmRead = context.read<TodoViewModel>();
+
     return TextField(
         onTap: callback,
         style: const TextStyle(color: Colors.white),
@@ -163,5 +157,10 @@ class EnterDataScreen extends StatelessWidget {
   void addTodo(BuildContext context) {
     final todoVmRead = context.read<TodoViewModel>();
     todoVmRead.addTodo();
+  }
+
+  void updateTodo(BuildContext context) {
+    final todoVmRead = context.read<TodoViewModel>();
+    todoVmRead.editTodo();
   }
 }

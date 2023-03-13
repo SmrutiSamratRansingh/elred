@@ -3,18 +3,20 @@ import 'package:eired/core/eired_exception.dart';
 import 'package:eired/core/enums.dart';
 import 'package:eired/features/todo_list/models/todo_model.dart';
 import 'package:eired/features/todo_list/usecases/todo_crud.dart';
+import 'package:eired/features/todo_list/views/enter_data_screen.dart';
 import 'package:eired/features/todo_list/views/todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/print_helper.dart';
 import '../../../core/snackbar_helper.dart';
 
 class TodoViewModel extends ChangeNotifier {
   final TodoCrudUsecase todoCrudUsecase;
   final firestore = FirebaseFirestore.instance;
   final todoCollection = FirebaseFirestore.instance.collection('todo');
-  final titleController = TextEditingController();
-  final placeController = TextEditingController();
-  final timeController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController placeController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
   final List<String> typeList = [
     "Music",
     "Business",
@@ -27,6 +29,12 @@ class TodoViewModel extends ChangeNotifier {
   IconData icon = Icons.face;
 
   bool isLoading = false;
+
+  bool isEdit = false;
+
+  late TodoModel todoEditModel;
+
+  String docIdEdit = "";
 
   TodoViewModel({required this.todoCrudUsecase});
 
@@ -66,7 +74,7 @@ class TodoViewModel extends ChangeNotifier {
           place: placeController.text,
           time: timeController.text);
       todoCrudUsecase.addTodo(todoModel: todo, ref: todoCollection);
-      Get.offAll(const Todo());
+      Get.offAll(const TodoScreen());
     } on EiredException catch (e) {
       ShowSnackbar.showErrorSnackbar(e.message);
     } catch (e) {
@@ -90,5 +98,54 @@ class TodoViewModel extends ChangeNotifier {
     } else {
       return Icons.face;
     }
+  }
+
+  void editTodo() async {
+    printDebug(docIdEdit);
+    try {
+      final todo = TodoModel(
+          type: selectedType,
+          heading: titleController.text,
+          place: placeController.text,
+          time: timeController.text);
+      await todoCrudUsecase.editTodo(
+          todoModel: todo, ref: todoCollection, docId: docIdEdit);
+      Get.back();
+    } on EiredException catch (e) {
+      ShowSnackbar.showErrorSnackbar(e.message);
+    } catch (e) {
+      ShowSnackbar.showErrorSnackbar("unable to add todos : $e");
+    }
+  }
+
+  void setDataForEdit(TodoModel todoModel, String docID) async {
+    isEdit = true;
+    todoEditModel = todoModel;
+    icon = getIconData(todoModel.type);
+    titleController.text = todoModel.heading;
+    placeController.text = todoModel.place;
+    timeController.text = todoModel.time;
+
+    docIdEdit = docID;
+    Get.to(() => const EnterDataScreen());
+  }
+
+  void deleteDoc(String docId) async {
+    await todoCrudUsecase.deleteTodo(docId: docId, ref: todoCollection);
+    Get.back();
+  }
+
+  void clearControllers() {
+    titleController.clear();
+    placeController.clear();
+    timeController.clear();
+  }
+
+  @override
+  void dispose() {
+    timeController.dispose();
+    timeController.dispose();
+    placeController.dispose();
+    super.dispose();
   }
 }

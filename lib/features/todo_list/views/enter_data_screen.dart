@@ -47,7 +47,7 @@ class EnterDataScreen extends StatelessWidget {
                     height: 20,
                   ),
                   createTextField(
-                      hint: "Place",
+                      hint: "Description",
                       controller: todoVmRead.placeController,
                       isReadOnly: false,
                       context: context),
@@ -63,6 +63,22 @@ class EnterDataScreen extends StatelessWidget {
                       TimeOfDay? td = await showTimePicker(
                           context: context, initialTime: TimeOfDay.now());
                       todoVmRead.createTimeString(td);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Consumer<TodoViewModel>(
+                    builder: (context, tdVm, child) {
+                      return createTextField(
+                        hint: "Select Date",
+                        context: context,
+                        controller: todoVmRead.dateController,
+                        isReadOnly: true,
+                        callback: () async {
+                          selectDate(context);
+                        },
+                      );
                     },
                   ),
                   const SizedBox(
@@ -162,5 +178,17 @@ class EnterDataScreen extends StatelessWidget {
   void updateTodo(BuildContext context) {
     final todoVmRead = context.read<TodoViewModel>();
     todoVmRead.editTodo();
+  }
+
+  Future<void> selectDate(BuildContext context) async {
+    final todoVmRead = context.read<TodoViewModel>();
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: todoVmRead.selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null) {
+      todoVmRead.setNewDate(picked);
+    }
   }
 }

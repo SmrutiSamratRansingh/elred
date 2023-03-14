@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eired/core/eired_exception.dart';
+import 'package:eired/core/global_variables.dart';
 import 'package:eired/core/print_helper.dart';
 import 'package:eired/features/todo_list/models/todo_model.dart';
 
@@ -8,10 +9,12 @@ class TodoRepository {
     try {
       await todoCollection
           .add({
+            'id': GlobalVariable.uid.toString(),
             'type': todoModel.type,
             'heading': todoModel.heading,
-            'place': todoModel.place,
+            'desc': todoModel.description,
             'time': todoModel.time,
+            'user_date': todoModel.date,
             'date': Timestamp.now()
           })
           .then((value) => printDebug("User Added"))
@@ -32,8 +35,9 @@ class TodoRepository {
           .update({
             'type': todoModel.type,
             'heading': todoModel.heading,
-            'place': todoModel.place,
+            'desc': todoModel.description,
             'time': todoModel.time,
+            'user_date': todoModel.date
           })
           .then((value) => printDebug("User Updated"))
           .catchError((error) {

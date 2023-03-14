@@ -16,15 +16,19 @@ class SigninScreen extends StatelessWidget {
             ? const CircularProgressIndicator(
                 color: Colors.blue,
               )
-            : ElevatedButton.icon(
-                onPressed: () {
-                  context.read<AuthViewModel>().signinWithGoogle();
-                },
-                icon: Image.asset(
-                  "assets/images/google_logo.png",
-                  height: 20,
-                ),
-                label: const Text("Signin with Google")),
+            : SizedBox(
+                height: 45,
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: ElevatedButton.icon(
+                    onPressed: () {
+                      context.read<AuthViewModel>().signinWithGoogle();
+                    },
+                    icon: Image.asset(
+                      "assets/images/google_logo.png",
+                      height: 20,
+                    ),
+                    label: const Text("Signin with Google")),
+              ),
       ),
     );
   }

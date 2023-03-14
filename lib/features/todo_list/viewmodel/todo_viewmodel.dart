@@ -7,6 +7,7 @@ import 'package:eired/features/todo_list/views/enter_data_screen.dart';
 import 'package:eired/features/todo_list/views/todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../../core/print_helper.dart';
 import '../../../core/snackbar_helper.dart';
 
@@ -17,6 +18,7 @@ class TodoViewModel extends ChangeNotifier {
   TextEditingController titleController = TextEditingController();
   TextEditingController placeController = TextEditingController();
   TextEditingController timeController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   final List<String> typeList = [
     "Music",
     "Business",
@@ -35,6 +37,9 @@ class TodoViewModel extends ChangeNotifier {
   late TodoModel todoEditModel;
 
   String docIdEdit = "";
+
+  DateTime selectedDate = DateTime.now();
+  String dateText = "Select Date";
 
   TodoViewModel({required this.todoCrudUsecase});
 
@@ -69,9 +74,10 @@ class TodoViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       final todo = TodoModel(
+          date: dateController.text,
           type: selectedType,
           heading: titleController.text,
-          place: placeController.text,
+          description: placeController.text,
           time: timeController.text);
       todoCrudUsecase.addTodo(todoModel: todo, ref: todoCollection);
       Get.offAll(const TodoScreen());
@@ -104,9 +110,10 @@ class TodoViewModel extends ChangeNotifier {
     printDebug(docIdEdit);
     try {
       final todo = TodoModel(
+          date: dateController.text,
           type: selectedType,
           heading: titleController.text,
-          place: placeController.text,
+          description: placeController.text,
           time: timeController.text);
       await todoCrudUsecase.editTodo(
           todoModel: todo, ref: todoCollection, docId: docIdEdit);
@@ -123,9 +130,9 @@ class TodoViewModel extends ChangeNotifier {
     todoEditModel = todoModel;
     icon = getIconData(todoModel.type);
     titleController.text = todoModel.heading;
-    placeController.text = todoModel.place;
+    placeController.text = todoModel.description;
     timeController.text = todoModel.time;
-
+    dateController.text = todoModel.date;
     docIdEdit = docID;
     Get.to(() => const EnterDataScreen());
   }
@@ -136,9 +143,11 @@ class TodoViewModel extends ChangeNotifier {
   }
 
   void clearControllers() {
+    isEdit = false;
     titleController.clear();
     placeController.clear();
     timeController.clear();
+    dateController.clear();
   }
 
   @override
@@ -147,5 +156,11 @@ class TodoViewModel extends ChangeNotifier {
     timeController.dispose();
     placeController.dispose();
     super.dispose();
+  }
+
+  void setNewDate(DateTime picked) {
+    selectedDate = picked;
+    dateController.text = DateFormat.yMMMEd().format(selectedDate);
+    notifyListeners();
   }
 }

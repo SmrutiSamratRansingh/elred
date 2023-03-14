@@ -57,15 +57,23 @@ class TodoScreen extends StatelessWidget {
                   printDebug(snapshot.data!.docs.length.toString());
                   final data = snapshot.data!.docs[index].data();
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            data["user_date"] ?? "",
+                            style: const TextStyle(fontSize: 12),
+                          )),
                       ListTile(
                         onTap: () {
                           String docId = snapshot.data!.docs[index].id;
                           TodoModel todoModel = TodoModel(
-                              type: data["type"],
-                              heading: data["heading"],
-                              place: data["place"],
-                              time: data["time"]);
+                              date: data["user_date"] ?? "",
+                              type: data["type"] ?? "",
+                              heading: data["heading"] ?? "",
+                              description: data["desc"] ?? "",
+                              time: data["time"] ?? "");
 
                           showEditDeleteDialog(
                               context, docId, todoModel, todoVmRead);
@@ -77,13 +85,16 @@ class TodoScreen extends StatelessWidget {
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.grey)),
                           child: Icon(
-                            todoVmRead.getIconData(data["type"]),
+                            todoVmRead.getIconData(data["type"] ?? ""),
                             color: Colors.blue,
                           ),
                         ),
-                        title: Text(data["heading"]),
-                        subtitle: Text(data["place"]),
-                        trailing: Text(data["time"]),
+                        title: Text(
+                          data["heading"] ?? "",
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        subtitle: Text(data["desc"] ?? ""),
+                        trailing: Text(data["time"] ?? ""),
                       ),
                       const Padding(
                         padding: EdgeInsets.only(left: 20, right: 20),

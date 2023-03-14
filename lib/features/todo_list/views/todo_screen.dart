@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eired/core/global_variables.dart';
 import 'package:eired/core/print_helper.dart';
 import 'package:eired/features/todo_list/models/todo_model.dart';
 import 'package:eired/features/todo_list/views/enter_data_screen.dart';
@@ -33,6 +34,8 @@ class TodoScreen extends StatelessWidget {
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: todoVmRead.todoCollection
+            .doc(GlobalVariable.uid)
+            .collection('tasks')
             .orderBy('date', descending: true)
             .snapshots(),
         builder: ((context, snapshot) {

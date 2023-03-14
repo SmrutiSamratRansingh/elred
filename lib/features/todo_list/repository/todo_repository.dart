@@ -8,6 +8,8 @@ class TodoRepository {
   addTodo(TodoModel todoModel, CollectionReference todoCollection) async {
     try {
       await todoCollection
+          .doc(GlobalVariable.uid)
+          .collection('tasks')
           .add({
             'id': GlobalVariable.uid.toString(),
             'type': todoModel.type,
@@ -31,6 +33,8 @@ class TodoRepository {
       TodoModel todoModel, CollectionReference todoCollection, String docId) {
     try {
       todoCollection
+          .doc(GlobalVariable.uid)
+          .collection('tasks')
           .doc(docId)
           .update({
             'type': todoModel.type,
@@ -52,6 +56,8 @@ class TodoRepository {
   deleteTodo(CollectionReference todoCollection, String docId) {
     try {
       todoCollection
+          .doc(GlobalVariable.uid)
+          .collection('tasks')
           .doc(docId)
           .delete()
           .then((value) => printDebug("User Deleted"))
